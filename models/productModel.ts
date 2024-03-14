@@ -1,5 +1,31 @@
 import mongoose, { Schema, Document } from "mongoose";
 
+// Define the category schema
+interface ICategory extends Document {
+  name: string;
+}
+
+const categorySchema: Schema<ICategory> = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+});
+
+// Define the brand schema
+interface IBrand extends Document {
+  name: string;
+}
+
+const brandSchema: Schema<IBrand> = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+});
+
 // Define the product schema
 interface IProduct extends Document {
   name: string;
@@ -8,10 +34,12 @@ interface IProduct extends Document {
   price: number;
   originalPrice?: number;
   discountPercentage?: number;
-  flavor?: string; 
+  categories: ICategory['_id'][]; // Many-to-many relationship with categories
+  brands: IBrand['_id'][]; // Many-to-many relationship with brands
+  stockQuantity: number;
   isNewProduct?: boolean;
   userIP: string;
-  userAgent?: string;  
+  userAgent?: string;
   acceptLanguage?: string;
 }
 
@@ -39,8 +67,23 @@ const productSchema: Schema<IProduct> = new mongoose.Schema(
     discountPercentage: {
       type: Number,
     },
-    flavor: {
-      type: String,
+    categories: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Category',
+        required: true,
+      },
+    ],
+    brands: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Brand',
+      },
+    ],
+    stockQuantity: {
+      type: Number,
+      required: true,
+      default: 0,
     },
     isNewProduct: {
       type: Boolean,
@@ -62,7 +105,13 @@ const productSchema: Schema<IProduct> = new mongoose.Schema(
   }
 );
 
+// Create the Category model
+const Category = mongoose.model<ICategory>("Category", categorySchema);
+
+// Create the Brand model
+const Brand = mongoose.model<IBrand>("Brand", brandSchema);
+
 // Create the Product model
 const Product = mongoose.model<IProduct>("Product", productSchema);
 
-export default Product;
+export { Product, Category, Brand };

@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import Product from "../models/productModel";
+import {Product} from "../models/productModel";
 import multer from 'multer';
 //@ts-ignore
 const router = express.Router();

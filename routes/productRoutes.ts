@@ -3,9 +3,13 @@
 import express from 'express';
 import * as productController from '../controllers/productController';
 import multer from 'multer';
+import { getAllCategories } from '../controllers/productController';
 
 const router = express.Router();
 const upload = multer();
+
+// GET all categories
+router.get("/categories", getAllCategories);
 
 // GET all products
 router.get("/", productController.getAllProducts);

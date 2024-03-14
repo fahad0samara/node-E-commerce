@@ -1,11 +1,11 @@
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import { Response } from "express";
 
-cloudinary.config({
-  cloud_name: "dxeonqtqt",
-  api_key: "951973593716222",
-  api_secret: "jbw6V4Qlnw-dD153k_Ukz13cjN0",
-  secure: true,
+cloudinary.config({ 
+  cloud_name: 'drmz5eqh7', 
+  api_key: '332722471545928', 
+  api_secret: 'peOGH2kHZ9ocSJZZY4Epio4SmsU',
+
 });
 
 interface UploadOptions {
@@ -15,9 +15,10 @@ interface UploadOptions {
 }
 
  export const commonUploadOptions: UploadOptions = {
-  folder: "products/cookies-images",
-  public_id: `coffee-${Date.now()}`,
+  folder: "products/E-commerce-images",
+  public_id: "arab",
   overwrite: true,
+
 };
 
 export const handleCloudinaryUpload = async (

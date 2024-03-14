@@ -1,19 +1,36 @@
+// Import necessary modules and models
 import { Request, Response } from "express";
-import Product from "../models/productModel";
+import {Category, Product} from "../models/productModel";
 import { commonUploadOptions, handleCloudinaryUpload } from "./cloudinaryController";
-// GET paginated products
+
+// GET all categories
+export const getAllCategories = async (req: Request, res: Response) => {
+  try {
+    const categories = await Category.find();
+    res.json(categories);
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    res.status(500).json({
+      error,
+      message: 'Internal server error',
+    });
+  }
+}
+
 // GET paginated products
 export const getAllProducts = async (req: Request, res: Response) => {
   const page = parseInt(req.query.page as string) || 1;
-  const pageSize = parseInt(req.query.pageSize as string) || 10;
+  const pageSize = parseInt(req.query.pageSize as string) || 10; // Use pageSize here
 
   try {
     const totalProducts = await Product.countDocuments();
     const totalPages = Math.ceil(totalProducts / pageSize);
 
     const products = await Product.find()
+      .populate('categories', 'name')
+      .populate('brands', 'name')
       .skip((page - 1) * pageSize)
-      .limit(pageSize);
+      .limit(pageSize); // Limit the number of products fetched by pageSize
 
     // Remove userIP field from each product
     const sanitizedProducts = products.map(product => {
@@ -26,18 +43,16 @@ export const getAllProducts = async (req: Request, res: Response) => {
       totalPages,
       currentPage: page,
     });
+
+    
   } catch (error) {
     console.error('Error fetching products:', error);
-
-    // Include error details in the response
     res.status(500).json({
       error,
       message: 'Internal server error',
     });
   }
 };
-
-
 
 
 // GET a single product by ID
@@ -59,6 +74,12 @@ export const getProductById = async (req: Request, res: Response) => {
 // POST a new product
 export const createProduct = async (req: Request, res: Response) => {
   try {
+    // Extract product data from request body, including category
+    const { name, description, price, originalPrice, discountPercentage, stockQuantity, isNewProduct, category } = req.body;
+
+    // Identify the user based on IP address
+    const userIP = req.ip;
+
     // Check if a file was uploaded
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
@@ -70,15 +91,6 @@ export const createProduct = async (req: Request, res: Response) => {
       return;
     }
 
-    // Extract product data from request body
-    const { name, description, price, originalPrice, discountPercentage, flavor, isNewProduct } = req.body;
-
-    // Identify the user based on IP address
-  const userIP = req.ip;
-
-
-
-
     // Create a new Product document with image URL from Cloudinary and user IP address
     const product = new Product({
       name,
@@ -87,8 +99,9 @@ export const createProduct = async (req: Request, res: Response) => {
       image: result,
       originalPrice,
       discountPercentage,
-      flavor,
+      stockQuantity,
       isNewProduct,
+      categories: [category], 
       userIP,
     });
 
@@ -105,6 +118,7 @@ export const createProduct = async (req: Request, res: Response) => {
     });
   }
 };
+
 
 // GET products for a specific user
 export const getProductsByUser = async (req: Request, res: Response) => {
@@ -125,14 +139,10 @@ export const getProductsByUser = async (req: Request, res: Response) => {
   }
 };
 
-
-
-
-
 // PUT update a product by ID
 export const updateProductById = async (req: Request, res: Response) => {
   try {
-    const { name, description, price, originalPrice, discountPercentage, isNewProduct, flavor } = req.body;
+    const { name, description, price, originalPrice, discountPercentage, isNewProduct, categories, brands, stockQuantity } = req.body;
     let updatedProduct: any;
 
     if (req.file) {
@@ -140,11 +150,7 @@ export const updateProductById = async (req: Request, res: Response) => {
       const imageUri = await handleCloudinaryUpload(commonUploadOptions, req.file.buffer, res);
       if (!imageUri) {
         return;
-      
-
-      };
-
-
+      }
 
       // If image upload is successful, update the product with the new image URL
       updatedProduct = await Product.findByIdAndUpdate(
@@ -156,8 +162,11 @@ export const updateProductById = async (req: Request, res: Response) => {
           image: imageUri,
           originalPrice,
           discountPercentage,
-          flavor,
+     
           isNewProduct,
+          categories,
+          brands,
+          stockQuantity,
         },
         { new: true }
       );
@@ -171,8 +180,11 @@ export const updateProductById = async (req: Request, res: Response) => {
           price,
           originalPrice,
           discountPercentage,
-          flavor,
+        
           isNewProduct,
+          categories,
+          brands,
+          stockQuantity,
         },
         { new: true }
       );
@@ -207,7 +219,3 @@ export const deleteProductById = async (req: Request, res: Response) => {
     });
   }
 };
-function generateUploadOptions(arg0: string) {
-  throw new Error("Function not implemented.");
-}
-
