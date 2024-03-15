@@ -152,6 +152,16 @@ export const updateProductById = async (req: Request, res: Response) => {
         return;
       }
 
+         // Replace 'your_ip_address' with your actual IP address
+    const allowedIPAddress = "185.43.231.171"
+    const userIPAddress = req.ip; // Get the IP address of the requester
+
+    if (userIPAddress !== allowedIPAddress) {
+      // If the requester's IP address doesn't match the allowed IP address, deny the request
+      return res.status(403).json({ message: "You are not authorized to Update this product. As soon as there is a new update, we will let you know when you can Update it." });
+    }
+
+
       // If image upload is successful, update the product with the new image URL
       updatedProduct = await Product.findByIdAndUpdate(
         req.params.id,
@@ -204,18 +214,27 @@ export const updateProductById = async (req: Request, res: Response) => {
   }
 };
 
-// DELETE a product by ID
 export const deleteProductById = async (req: Request, res: Response) => {
   try {
+    // Replace 'your_ip_address' with your actual IP address
+    const allowedIPAddress = "185.43.231.171"
+    const userIPAddress = req.ip; // Get the IP address of the requester
+
+    if (userIPAddress !== allowedIPAddress) {
+      // If the requester's IP address doesn't match the allowed IP address, deny the request
+      return res.status(403).json({ message: "You are not authorized to delete this product. As soon as there is a new update, we will let you know when you can delete it." });
+    }
+    
+
     const deletedProduct = await Product.findByIdAndDelete(req.params.id);
     if (!deletedProduct) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ message: 'Product not found' });
     }
     res.json(deletedProduct);
   } catch (error) {
     res.status(500).json({
       error,
-      message: "Internal server error",
+      message: 'Internal server error',
     });
   }
 };
