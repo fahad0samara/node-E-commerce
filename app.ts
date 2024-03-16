@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const path = require('path');
+
 import mongoose from "mongoose";
 import productRoutes from './routes/productRoutes';
 
@@ -57,13 +59,13 @@ app.get('/get-user-data', (req: { ip: any; }, res: { json: (arg0: { userIP: any;
   res.json({ userIP });
 });
 
+app.get('/', (req: any, res: { sendFile: (arg0: any) => void; }) => {
+  res.sendFile(path.join(__dirname, 'instructions.html'));
+});
+
+
 app.use('/products', productRoutes);
 
-// hello world route
-app.get("/", (req: any, res: { send: (arg0: string) => void; }) => {
-  res.send("Hello, world!");
-}
-);
 
 
 
