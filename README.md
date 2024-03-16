@@ -2,6 +2,8 @@
 
 This repository contains the source code for an E-Commerce application built using Node.js, Express.js, MongoDB, and Mongoose. The application provides functionalities to manage products and categories, allowing users to browse, search, and purchase items.
 
+Access the application at [https://e-commerce0.azurewebsites.net](https://e-commerce0.azurewebsites.net) in your web browser.
+
 ## Features
 
 - **Product Management**: Create, read, update, and delete products.
