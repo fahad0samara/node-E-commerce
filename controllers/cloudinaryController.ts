@@ -2,6 +2,7 @@ import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import { Response } from "express";
 
 cloudinary.config({ 
+  //fahad0arab
   cloud_name: 'drmz5eqh7', 
   api_key: '332722471545928', 
   api_secret: 'peOGH2kHZ9ocSJZZY4Epio4SmsU',

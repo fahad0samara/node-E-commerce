@@ -17,6 +17,32 @@ export const getAllCategories = async (req: Request, res: Response) => {
   }
 }
 
+export const getAllProductsNoPagination = async (req: Request, res: Response) => {
+  try {
+    const products = await Product.find()
+      .populate('categories', 'name');
+
+    // Remove userIP field from each product
+    const sanitizedProducts = products.map(product => {
+      const { userIP, ...sanitizedProduct } = product.toObject();
+      return sanitizedProduct;
+    });
+
+    res.json({
+      products: sanitizedProducts,
+      totalProducts: sanitizedProducts.length,
+    });
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({
+      error,
+      message: 'Internal server error',
+    });
+  }
+};
+
+
+
 // GET paginated products
 export const getAllProducts = async (req: Request, res: Response) => {
   const page = parseInt(req.query.page as string) || 1;
@@ -28,7 +54,6 @@ export const getAllProducts = async (req: Request, res: Response) => {
 
     const products = await Product.find()
       .populate('categories', 'name')
-      .populate('brands', 'name')
       .skip((page - 1) * pageSize)
       .limit(pageSize); // Limit the number of products fetched by pageSize
 
@@ -152,14 +177,6 @@ export const updateProductById = async (req: Request, res: Response) => {
         return;
       }
 
-         // Replace 'your_ip_address' with your actual IP address
-    const allowedIPAddress = "185.43.231.171"
-    const userIPAddress = req.ip; // Get the IP address of the requester
-
-    if (userIPAddress !== allowedIPAddress) {
-      // If the requester's IP address doesn't match the allowed IP address, deny the request
-      return res.status(403).json({ message: "You are not authorized to Update this product. As soon as there is a new update, we will let you know when you can Update it." });
-    }
 
 
       // If image upload is successful, update the product with the new image URL
@@ -175,7 +192,7 @@ export const updateProductById = async (req: Request, res: Response) => {
      
           isNewProduct,
           categories,
-          brands,
+  
           stockQuantity,
         },
         { new: true }
@@ -193,7 +210,7 @@ export const updateProductById = async (req: Request, res: Response) => {
         
           isNewProduct,
           categories,
-          brands,
+    
           stockQuantity,
         },
         { new: true }
@@ -216,15 +233,7 @@ export const updateProductById = async (req: Request, res: Response) => {
 
 export const deleteProductById = async (req: Request, res: Response) => {
   try {
-    // Replace 'your_ip_address' with your actual IP address
-    const allowedIPAddress = "185.43.231.171"
-    const userIPAddress = req.ip; // Get the IP address of the requester
 
-    if (userIPAddress !== allowedIPAddress) {
-      // If the requester's IP address doesn't match the allowed IP address, deny the request
-      return res.status(403).json({ message: "You are not authorized to delete this product. As soon as there is a new update, we will let you know when you can delete it." });
-    }
-    
 
     const deletedProduct = await Product.findByIdAndDelete(req.params.id);
     if (!deletedProduct) {

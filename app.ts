@@ -65,49 +65,8 @@ app.get("/", (req: any, res: { send: (arg0: string) => void; }) => {
 }
 );
 
-// // Function to insert sample categories
-// const insertSampleCategories = async () => {
-//   try {
-//     // Check if there are already categories in the database
-//     const existingCategories = await Category.find();
-//     if (existingCategories.length > 0) {
-//       console.log("Categories already exist in the database.");
-//       return;
-//     }
 
 
-//      // Sample categories data
-// const sampleCategoriesData = [
-//   { name: "Man" },
-//   { name: "Woman" },
-//   { name: "Baby" },
-//   { name: "Electronics" },
-//   { name: "Home & Kitchen" },
-//   { name: "Books & Literature" },
-//   { name: "Fashion" },
-//   { name: "Beauty & Personal Care" },
-//   { name: "Health & Fitness" },
-//   { name: "Toys & Games" },
-//   { name: "Sports & Outdoors" },
-//   { name: "Automotive" },
-//   { name: "Food & Beverages" },
-//   { name: "Pets" },
-//   { name: "Office & Stationery" },
-//   { name: "Travel & Leisure" },
-//   // Add more categories as needed
-// ];
-
-
-//     // Insert sample categories into the database
-//     await Category.insertMany(sampleCategoriesData);
-//     console.log("Sample categories inserted successfully.");
-//   } catch (error) {
-//     console.error("Error inserting sample categories:", error);
-//   }
-// };
-
-// // Insert sample categories when the server starts
-// insertSampleCategories();
 
 
 

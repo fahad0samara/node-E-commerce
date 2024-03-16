@@ -13,18 +13,7 @@ const categorySchema: Schema<ICategory> = new mongoose.Schema({
   },
 });
 
-// Define the brand schema
-interface IBrand extends Document {
-  name: string;
-}
 
-const brandSchema: Schema<IBrand> = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-});
 
 // Define the product schema
 interface IProduct extends Document {
@@ -35,7 +24,7 @@ interface IProduct extends Document {
   originalPrice?: number;
   discountPercentage?: number;
   categories: ICategory['_id'][]; // Many-to-many relationship with categories
-  brands: IBrand['_id'][]; // Many-to-many relationship with brands
+
   stockQuantity: number;
   isNewProduct?: boolean;
   userIP: string;
@@ -74,12 +63,6 @@ const productSchema: Schema<IProduct> = new mongoose.Schema(
         required: true,
       },
     ],
-    brands: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Brand',
-      },
-    ],
     stockQuantity: {
       type: Number,
       required: true,
@@ -108,10 +91,9 @@ const productSchema: Schema<IProduct> = new mongoose.Schema(
 // Create the Category model
 const Category = mongoose.model<ICategory>("Category", categorySchema);
 
-// Create the Brand model
-const Brand = mongoose.model<IBrand>("Brand", brandSchema);
+
 
 // Create the Product model
 const Product = mongoose.model<IProduct>("Product", productSchema);
 
-export { Product, Category, Brand };
+export { Product, Category };

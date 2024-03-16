@@ -14,6 +14,9 @@ router.get("/categories", getAllCategories);
 // GET all products
 router.get("/", productController.getAllProducts);
 
+// GET all products without pagination
+router.get("/all", productController.getAllProductsNoPagination);
+
 // GET a single product by ID
 router.get("/:id", productController.getProductById);
 
