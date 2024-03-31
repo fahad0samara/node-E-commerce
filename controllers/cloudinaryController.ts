@@ -2,6 +2,7 @@ import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import { Response } from "express";
 
 cloudinary.config({
+  
   cloud_name: "dxeonqtqt",
   api_key: "951973593716222",
   api_secret: "jbw6V4Qlnw-dD153k_Ukz13cjN0",
@@ -15,8 +16,8 @@ interface UploadOptions {
 }
 
  export const commonUploadOptions: UploadOptions = {
-  folder: "products/E-commerce-images",
-  public_id: `E-commerce-image`,
+  folder: "products/E-commerce",
+  public_id: `E-commerce-${Date.now()}`,
   overwrite: true,
 };
 
@@ -31,7 +32,6 @@ export const handleCloudinaryUpload = async (
 
     // Set the unique public_id in the options
     const uniqueOptions = { ...options, public_id: uniquePublicId };
-    console.log("uniqueOptions", uniqueOptions);
     
 
     const result: UploadApiResponse = await new Promise((resolve, reject) => {
