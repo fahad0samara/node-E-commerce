@@ -175,7 +175,9 @@ export const updateProductById = async (req: Request, res: Response) => {
       const imageUri = await handleCloudinaryUpload(commonUploadOptions, req.file.buffer, res);
       if (!imageUri) {
         return;
-      }
+      
+
+      };
 
 
 
